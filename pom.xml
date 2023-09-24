@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.travel</groupId>
-    <artifactId>Travel</artifactId>
+    <artifactId>Travel-Booking-Service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Travel Management</name>
     <description>Travel Management</description>
@@ -25,7 +25,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -43,7 +47,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -52,5 +55,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

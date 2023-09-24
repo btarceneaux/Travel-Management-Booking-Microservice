@@ -1,16 +1,13 @@
 package com.travel.bean;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Time;
 import java.util.Date;
 @Entity
 public class Booking
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int bookingId;
     private String pickUpAddress;
     private String destinationAddress;
@@ -18,19 +15,12 @@ public class Booking
     private Time bookingTime;
     private int numberOfPassengers;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Customer relatedCustomer;
+
     public Booking()
     {
 
-    }
-
-    public Booking(int bookingId, String pickUpAddress, String destinationAddress, Date bookingDate, Time bookingTime, int numberOfPassengers)
-    {
-        this.bookingId = bookingId;
-        this.pickUpAddress = pickUpAddress;
-        this.destinationAddress = destinationAddress;
-        this.bookingDate = bookingDate;
-        this.bookingTime = bookingTime;
-        this.numberOfPassengers = numberOfPassengers;
     }
 
     public int getBookingId()
@@ -74,6 +64,7 @@ public class Booking
     }
 
     public Time getBookingTime()
+
     {
         return bookingTime;
     }
@@ -91,6 +82,16 @@ public class Booking
     public void setNumberOfPassengers(int numberOfPassengers)
     {
         this.numberOfPassengers = numberOfPassengers;
+    }
+
+    public Customer getRelatedCustomer()
+    {
+        return relatedCustomer;
+    }
+
+    public void setRelatedCustomer(Customer relatedCustomer)
+    {
+        this.relatedCustomer = relatedCustomer;
     }
 
     @Override

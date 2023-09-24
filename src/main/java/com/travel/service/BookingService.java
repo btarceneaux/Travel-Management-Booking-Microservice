@@ -3,9 +3,13 @@ package com.travel.service;
 import com.travel.bean.Booking;
 import com.travel.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingService
@@ -13,39 +17,26 @@ public class BookingService
     @Autowired
     BookingRepository repository;
 
-    public List<Booking> getAllBookings()
+    public Page<Booking> getAllBookings(int page, int size, String sort, String sortOrder)
     {
-        List<Booking> bookingList = repository.findAll();
+        Sort.Direction direction = sortOrder.equalsIgnoreCase("ASC") ?
+                Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sortBy = Sort.by(direction, sort);
+        Pageable pageable = PageRequest.of(page, size, sortBy);
 
-        return bookingList;
+        return repository.findAll(pageable);
     }
 
-    public Booking getBookingById(int bookingId)
+    public Optional<Booking> getBookingById(int bookingId)
     {
         boolean exists = repository.existsById(bookingId);
 
-        if (exists)
-        {
-            Booking myBooking = repository.getReferenceById(bookingId);
-            return myBooking;
-        }
-        else
-        {
-            return null;
-        }
+        return repository.findById(bookingId);
     }
 
-    public int createBooking(Booking myBooking)
+    public Booking createBooking(Booking myBooking)
     {
-        int result = 0;
-
-        Booking savedBooking = repository.save(myBooking);
-        if(savedBooking.getBookingId() > 0)
-        {
-            result = 1;
-        }
-
-        return result;
+        return repository.save(myBooking);
     }
 
     public int deleteBooking(int bookingId)
@@ -63,15 +54,16 @@ public class BookingService
         return result;
     }
 
-    public int updateBooking(Booking updatedBooking)
+    public Booking updateBooking(Booking updatedBooking)
     {
-        int result = 0;
+
         if(repository.existsById(updatedBooking.getBookingId()))
         {
-            repository.save(updatedBooking);
-            result = 1;
+            return repository.save(updatedBooking);
         }
-
-        return result;
+        else
+        {
+            return null;
+        }
     }
 }
