@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerService
@@ -26,13 +26,13 @@ public class CustomerService
         return repository.findAll(pageable);
     }
 
-    public Customer getCustomerByCustomerId(int customerId)
+    public Optional<Customer> getCustomerByCustomerId(int customerId)
     {
         boolean exists = repository.existsById(customerId);
 
         if(exists)
         {
-            return repository.getReferenceById(customerId);
+            return repository.findById(customerId);
         }
         else
         {
@@ -44,7 +44,7 @@ public class CustomerService
     {
         //First make sure it does not already exist
         Customer tempCustomer = repository.findByEmailAddress(myCustomer.getEmailAddress());
-        if (tempCustomer.getEmailAddress().equals(myCustomer.getEmailAddress()))
+        if (tempCustomer != null)
         {
             return tempCustomer;
         }

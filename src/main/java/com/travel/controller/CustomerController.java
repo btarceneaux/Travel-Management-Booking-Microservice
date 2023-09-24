@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
+import java.util.Optional;
 
 @RestController
 public class CustomerController
@@ -35,10 +36,10 @@ public class CustomerController
     public ResponseDto getCustomerById(@PathVariable  int customerId)
     {
         ResponseDto response = new ResponseDto();
-        Customer myCustomer = service.getCustomerByCustomerId(customerId);
-
-        if(myCustomer.getCustomerId() > 0)
+        Optional<Customer> optionalCustomer = service.getCustomerByCustomerId(customerId);
+        if(optionalCustomer.isPresent())
         {
+            Customer myCustomer = optionalCustomer.get();
             response.setMessage("The booking was found.");
             response.setStatus(HttpStatus.OK.name());
             response.setTimestamp(new Date());
