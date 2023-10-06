@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CustomerController
 {
     @Autowired
@@ -24,7 +25,7 @@ public class CustomerController
      * @param sortOrder
      * @return
      */
-    @GetMapping("/customers")
+    @GetMapping("/customer")
     public Page<Customer> getAllCustomers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
                                           @RequestParam(defaultValue = "lastName") String sort,
                                           @RequestParam(defaultValue = "ASC") String sortOrder)
@@ -32,7 +33,7 @@ public class CustomerController
         return service.getAllCustomers(page, size, sort, sortOrder);
     }
 
-    @GetMapping("/customers/{customerId}")
+    @GetMapping("/customer/{customerId}")
     public ResponseDto getCustomerById(@PathVariable  int customerId)
     {
         ResponseDto response = new ResponseDto();
@@ -56,7 +57,7 @@ public class CustomerController
         return response;
     }
 
-    @PostMapping("/createCustomer")
+    @PostMapping("/customer")
     public ResponseDto createCustomer(@RequestBody Customer myCustomer)
     {
         ResponseDto response = new ResponseDto();
@@ -85,7 +86,7 @@ public class CustomerController
      * @param myCustomer
      * @return
      */
-    @PutMapping("/updateCustomer")
+    @PutMapping("/customer")
     public ResponseDto updateCustomer(@RequestBody Customer myCustomer)
     {
         ResponseDto response = new ResponseDto();
@@ -105,7 +106,7 @@ public class CustomerController
      * @param customerId
      * @return
      */
-    @DeleteMapping("/deleteCustomer/{customerId}")
+    @DeleteMapping("/customer/{customerId}")
     public ResponseDto deleteCustomer(@PathVariable int customerId)
     {
         ResponseDto response = new ResponseDto();
