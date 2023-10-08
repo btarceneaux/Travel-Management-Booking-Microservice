@@ -7,7 +7,7 @@ import java.util.Date;
 public class Booking
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookingId;
     private String pickUpAddress;
     private String destinationAddress;

@@ -13,7 +13,6 @@ import java.util.Optional;
 
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class BookingController
 {
     @Autowired
@@ -34,7 +33,7 @@ public class BookingController
         Page<Booking> bookingPage = service.getAllBookings(page, size, sort, sortOrder);
 
         response.setMessage("All bookings were returned");
-        response.setStatus(HttpStatus.OK.name());
+        response.setStatus(HttpStatus.OK.value());
         response.setTimestamp(new Date());
         response.setData(bookingPage);
 
@@ -54,14 +53,14 @@ public class BookingController
         {
             Booking myBooking = optionalBooking.get();
             response.setMessage("The booking was found");
-            response.setStatus(HttpStatus.OK.name());
+            response.setStatus(HttpStatus.OK.value());
             response.setTimestamp(new Date());
             response.setData(myBooking);
         }
         else
         {
             response.setMessage("The booking does not exist.");
-            response.setStatus(HttpStatus.EXPECTATION_FAILED.name());
+            response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
             response.setTimestamp(new Date());
             response.setData(null);
         }
@@ -88,14 +87,14 @@ public class BookingController
         if(myBooking.getBookingId() > 0)
         {
             response.setMessage("The booking for " + customer.getEmailAddress() + "was successful.");
-            response.setStatus(HttpStatus.OK.name());
+            response.setStatus(HttpStatus.OK.value());
             response.setTimestamp(new Date());
             response.setData(savedBooking);
         }
         else
         {
             response.setMessage("The booking for " + customer.getEmailAddress() + "was not successful.");
-            response.setStatus(HttpStatus.EXPECTATION_FAILED.name());
+            response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
             response.setTimestamp(new Date());
             response.setData(null);
         }
@@ -116,7 +115,7 @@ public class BookingController
         Booking updatedBooking = service.updateBooking(myBooking);
 
         response.setMessage("The booking was updated successfully.");
-        response.setStatus(HttpStatus.OK.name());
+        response.setStatus(HttpStatus.OK.value());
         response.setTimestamp(new Date());
         response.setData(updatedBooking);
 
@@ -137,12 +136,12 @@ public class BookingController
         if(result == 1)
         {
             response.setMessage("The booking was successfully deleted.");
-            response.setStatus(HttpStatus.OK.name());
+            response.setStatus(HttpStatus.OK.value());
         }
         else
         {
             response.setMessage("The booking was not successfully deleted.");
-            response.setStatus(HttpStatus.EXPECTATION_FAILED.name());
+            response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
         }
         response.setTimestamp(new Date());
         response.setData(null);

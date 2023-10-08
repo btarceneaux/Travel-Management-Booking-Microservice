@@ -6,14 +6,14 @@ public class ResponseDto
 {
     private String message;
     private Date timestamp = new Date();
-    private String status;
+    private int status;
     private Object data;
 
     public ResponseDto()
     {
     }
 
-    public ResponseDto(String message, Date timestamp, String status, Object data)
+    public ResponseDto(String message, Date timestamp, int status, Object data)
     {
         this.message = message;
         this.timestamp = timestamp;
@@ -41,12 +41,12 @@ public class ResponseDto
         this.timestamp = timestamp;
     }
 
-    public String getStatus()
+    public int getStatus()
     {
         return status;
     }
 
-    public void setStatus(String status)
+    public void setStatus(int status)
     {
         this.status = status;
     }

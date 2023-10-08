@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CustomerController
 {
     @Autowired
@@ -42,14 +41,14 @@ public class CustomerController
         {
             Customer myCustomer = optionalCustomer.get();
             response.setMessage("The booking was found.");
-            response.setStatus(HttpStatus.OK.name());
+            response.setStatus(HttpStatus.OK.value());
             response.setTimestamp(new Date());
             response.setData(myCustomer);
         }
         else
         {
             response.setMessage("The customer does not exist.");
-            response.setStatus(HttpStatus.EXPECTATION_FAILED.name());
+            response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
             response.setTimestamp(new Date());
             response.setData(null);
         }
@@ -61,19 +60,32 @@ public class CustomerController
     public ResponseDto createCustomer(@RequestBody Customer myCustomer)
     {
         ResponseDto response = new ResponseDto();
+
+        if((myCustomer.getFirstName() == null) ||
+                (myCustomer.getLastName() == null) ||
+                (myCustomer.getEmailAddress() == null))
+        {
+            response.setMessage("The customer was not successfully saved because one of the fields was blank.");
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setTimestamp(new Date());
+            response.setData(null);
+
+            return response;
+        }
+
         Customer savedCustomer = service.createCustomer(myCustomer);
 
         if(savedCustomer.getCustomerId() > 0)
         {
             response.setMessage("The customer was successfully saved.");
-            response.setStatus(HttpStatus.OK.name());
+            response.setStatus(HttpStatus.OK.value());
             response.setTimestamp(new Date());
             response.setData(savedCustomer);
         }
         else
         {
             response.setMessage("The customer was not successfully saved.");
-            response.setStatus(HttpStatus.EXPECTATION_FAILED.name());
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setTimestamp(new Date());
             response.setData(null);
         }
@@ -94,7 +106,7 @@ public class CustomerController
         Customer updatedCustomer = service.updateCustomer(myCustomer);
 
         response.setMessage("The customer was updated successfully.");
-        response.setStatus(HttpStatus.OK.name());
+        response.setStatus(HttpStatus.OK.value());
         response.setTimestamp(new Date());
         response.setData(updatedCustomer);
 
@@ -115,12 +127,12 @@ public class CustomerController
         if(result == 1)
         {
             response.setMessage("The customer was successfully deleted.");
-            response.setStatus(HttpStatus.OK.name());
+            response.setStatus(HttpStatus.OK.value());
         }
         else
         {
             response.setMessage("The booking was not successfully deleted.");
-            response.setStatus(HttpStatus.EXPECTATION_FAILED.name());
+            response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
         }
         response.setTimestamp(new Date());
         response.setData(null);
