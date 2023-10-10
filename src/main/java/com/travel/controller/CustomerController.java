@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,11 +28,11 @@ public class CustomerController
      * @return
      */
     @GetMapping("/customer")
-    public Page<Customer> getAllCustomers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-                                          @RequestParam(defaultValue = "lastName") String sort,
-                                          @RequestParam(defaultValue = "ASC") String sortOrder)
+    public List<Customer> getAllCustomers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+                                @RequestParam(defaultValue = "lastName") String sort,
+                                @RequestParam(defaultValue = "ASC") String sortOrder)
     {
-        return service.getAllCustomers(page, size, sort, sortOrder);
+        return service.getAllCustomers(page, size, sort, sortOrder).toList();
     }
 
     @GetMapping("/customer/{customerId}")
