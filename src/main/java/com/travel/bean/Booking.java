@@ -9,14 +9,15 @@ public class Booking
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookingId;
-    private String pickUpAddress;
-    private String destinationAddress;
-    private Date bookingDate;
-    private Time bookingTime;
+    private Date bookingDateAndTime;
     private int numberOfPassengers;
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     private Customer relatedCustomer;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address sourceAddress;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address destinationAddress;
 
     public Booking()
     {
@@ -33,45 +34,14 @@ public class Booking
         this.bookingId = bookingId;
     }
 
-    public String getPickUpAddress()
+    public Date getBookingDateAndTime()
     {
-        return pickUpAddress;
+        return bookingDateAndTime;
     }
 
-    public void setPickUpAddress(String pickUpAddress)
+    public void setBookingDateAndTime(Date bookingDateAndTime)
     {
-        this.pickUpAddress = pickUpAddress;
-    }
-
-    public String getDestinationAddress()
-    {
-        return destinationAddress;
-    }
-
-    public void setDestinationAddress(String destinationAddress)
-    {
-        this.destinationAddress = destinationAddress;
-    }
-
-    public Date getBookingDate()
-    {
-        return bookingDate;
-    }
-
-    public void setBookingDate(Date bookingDate)
-    {
-        this.bookingDate = bookingDate;
-    }
-
-    public Time getBookingTime()
-
-    {
-        return bookingTime;
-    }
-
-    public void setBookingTime(Time bookingTime)
-    {
-        this.bookingTime = bookingTime;
+        this.bookingDateAndTime = bookingDateAndTime;
     }
 
     public int getNumberOfPassengers()
@@ -94,16 +64,23 @@ public class Booking
         this.relatedCustomer = relatedCustomer;
     }
 
-    @Override
-    public String toString()
+    public Address getSourceAddress()
     {
-        return "Booking{" +
-                "bookingId=" + bookingId +
-                ", pickUpAddress='" + pickUpAddress + '\'' +
-                ", destinationAddress='" + destinationAddress + '\'' +
-                ", bookingDate=" + bookingDate +
-                ", bookingTime=" + bookingTime +
-                ", numberOfPassengers=" + numberOfPassengers +
-                '}';
+        return sourceAddress;
+    }
+
+    public void setSourceAddress(Address sourceAddress)
+    {
+        this.sourceAddress = sourceAddress;
+    }
+
+    public Address getDestinationAddress()
+    {
+        return destinationAddress;
+    }
+
+    public void setDestinationAddress(Address destinationAddress)
+    {
+        this.destinationAddress = destinationAddress;
     }
 }

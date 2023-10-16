@@ -1,14 +1,17 @@
 package com.travel.controller;
 
 import com.travel.bean.Booking;
-import com.travel.bean.Customer;
 import com.travel.dto.ResponseDto;
+import com.travel.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.travel.service.BookingService;
 import java.util.Date;
+import com.travel.bean.Customer;
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,6 +21,9 @@ public class BookingController
     @Autowired
     BookingService service;
 
+    @Autowired
+    CustomerService customerService;
+
     /**
      * Get all bookings by page
      * @param page
@@ -25,19 +31,13 @@ public class BookingController
      * @return
      */
     @GetMapping("/bookings")
-    public ResponseDto getAllBookings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-                                   @RequestParam(defaultValue = "pickUpAddress") String sort,
-                                   @RequestParam(defaultValue = "ASC") String sortOrder)
+    public List<Booking> getAllBookings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+                               @RequestParam(defaultValue = "pickUpAddress") String sort,
+                               @RequestParam(defaultValue = "ASC") String sortOrder)
     {
-        ResponseDto response = new ResponseDto();
-        Page<Booking> bookingPage = service.getAllBookings(page, size, sort, sortOrder);
 
-        response.setMessage("All bookings were returned");
-        response.setStatus(HttpStatus.OK.value());
-        response.setTimestamp(new Date());
-        response.setData(bookingPage);
+        return service.getAllBookings(page, size, sort, sortOrder).toList();
 
-        return response;
     }
 
     /**
@@ -71,32 +71,41 @@ public class BookingController
     /**
      * Create a booking
      * @param myBooking
-     * @param customer
      * @return
      */
     @PostMapping("/createBooking")
-    public ResponseDto createBooking(@RequestBody Booking myBooking, @RequestBody Customer customer)
+    public ResponseDto createBooking(@RequestBody Booking myBooking)
     {
         ResponseDto response = new ResponseDto();
+        System.out.println("Printing Time Variables");
+        System.out.println(myBooking.getBookingDateAndTime());
 
-        //Add the customer to the booking
-        myBooking.setRelatedCustomer(customer);
+        //Get the customer from the booking
+        Optional<Customer> optionalCustomer = customerService.getCustomerByCustomerId(myBooking.getRelatedCustomer().getCustomerId());
 
-        Booking savedBooking = service.createBooking(myBooking);
-
-        if(myBooking.getBookingId() > 0)
+        if(optionalCustomer.isPresent())
         {
-            response.setMessage("The booking for " + customer.getEmailAddress() + "was successful.");
-            response.setStatus(HttpStatus.OK.value());
-            response.setTimestamp(new Date());
-            response.setData(savedBooking);
-        }
-        else
-        {
-            response.setMessage("The booking for " + customer.getEmailAddress() + "was not successful.");
-            response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
-            response.setTimestamp(new Date());
-            response.setData(null);
+            Customer myCustomer = optionalCustomer.get();
+
+            //Add the customer to the booking
+            myBooking.setRelatedCustomer(myCustomer);
+
+            Booking savedBooking = service.createBooking(myBooking);
+
+            if(myBooking.getBookingId() > 0)
+            {
+                response.setMessage("The booking for " + myCustomer.getEmailAddress() + "was successful.");
+                response.setStatus(HttpStatus.OK.value());
+                response.setTimestamp(new Date());
+                response.setData(savedBooking);
+            }
+            else
+            {
+                response.setMessage("The booking for " + myCustomer.getEmailAddress() + "was not successful.");
+                response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
+                response.setTimestamp(new Date());
+                response.setData(null);
+            }
         }
 
         return response;
