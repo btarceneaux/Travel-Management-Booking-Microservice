@@ -1,19 +1,21 @@
 package com.travel.controller;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.travel.bean.Address;
 import com.travel.bean.Booking;
 import com.travel.dto.ResponseDto;
 import com.travel.service.CustomerService;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.travel.service.BookingService;
-import java.util.Date;
+
+import java.util.*;
+
 import com.travel.bean.Customer;
-
-import java.util.List;
-import java.util.Optional;
-
+import com.mashape.unirest.http.*;
 
 @RestController
 public class BookingController
@@ -74,7 +76,7 @@ public class BookingController
      * @return
      */
     @PostMapping("/createBooking")
-    public ResponseDto createBooking(@RequestBody Booking myBooking)
+    public ResponseDto createBooking(@RequestBody Booking myBooking) throws UnirestException
     {
         ResponseDto response = new ResponseDto();
         System.out.println("Printing Time Variables");
@@ -90,7 +92,57 @@ public class BookingController
             //Add the customer to the booking
             myBooking.setRelatedCustomer(myCustomer);
 
+            //Now call the other microservice to calculate the fare.
+            String calculateURL = "http://localhost:9000/api/calculating-service/getCost";
+
+            Unirest.setTimeouts(0,0);
+
+            JSONObject addressJson = new JSONObject();
+            JSONArray addressJsonArray = new JSONArray();
+
+            addressJson.put("sourceStreetAddress", myBooking.getSourceAddress().getStreetAddress());
+            addressJson.put("sourceCity", myBooking.getSourceAddress().getCity());
+            addressJson.put("sourceState", myBooking.getSourceAddress().getState());
+            addressJson.put("sourceZipCode", myBooking.getSourceAddress().getZipCode());
+
+            addressJson.put("destinationStreetAddress", myBooking.getDestinationAddress().getStreetAddress());
+            addressJson.put("destinationCity", myBooking.getDestinationAddress().getCity());
+            addressJson.put("destinationState", myBooking.getDestinationAddress().getState());
+            addressJson.put("destinationZipCode", myBooking.getDestinationAddress().getZipCode());
+
+
+//            addressJsonArray.put(addressJson);
+
+
+//            addressJsonArray.put(addressJson);
+
+            //            myaddressList.add(myBooking.getSourceAddress());
+//            myaddressList.add(myBooking.getDestinationAddress());
+
+//            Map<String, Object> addressMap = new HashMap<String, Object>();
+//            addressMap.put("sourceAddress", myBooking.getSourceAddress());
+//            addressMap.put("destinationAddress", myBooking.getDestinationAddress());
+
+//            HttpResponse<JsonNode> calculationResponse = Unirest.post(calculateURL)
+//                    .body(addressMap)
+//                    .asJson();
+
+//            calculationResponse.getBody();
+//            JSONArray(myaddressList.toArray());
+
+            HttpResponse<String> calculationResponse = Unirest.post(calculateURL)
+                    .header("Accept", "application/json")
+                    .header("contentType", "application/json")
+                    .header("charset", "utf-8")
+                    .body(addressJson).asString();
+
+            JSONObject myJsonObject = new JSONObject(calculationResponse.getBody());
+            double price = myJsonObject.getDouble("data");
+
+            myBooking.setCost(price);
+
             Booking savedBooking = service.createBooking(myBooking);
+
 
             if(myBooking.getBookingId() > 0)
             {

@@ -19,6 +19,8 @@ public class Booking
     @OneToOne(cascade = CascadeType.ALL)
     private Address destinationAddress;
 
+    private double cost = 0;
+
     public Booking()
     {
 
@@ -82,5 +84,15 @@ public class Booking
     public void setDestinationAddress(Address destinationAddress)
     {
         this.destinationAddress = destinationAddress;
+    }
+
+    public double getCost()
+    {
+        return cost;
+    }
+
+    public void setCost(double cost)
+    {
+        this.cost = cost;
     }
 }
