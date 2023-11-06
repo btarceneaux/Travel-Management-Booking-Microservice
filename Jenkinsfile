@@ -7,12 +7,6 @@ pipeline {
     // Got permission denied while trying to connect to the Docker daemon socket at unix.
     // sudo usermod -a -G docker jenkins
     // restart jenkins server ->  sudo service jenkins restart
-    environment
-    {
-        DBUN='root'
-        DBPW='Myd@t@b@$3'
-    }
-
     stages {
         
         stage('Maven Compile') {
@@ -22,12 +16,12 @@ pipeline {
             }
         }
         
-        //  stage('Maven Test') {
-        //     steps {
-        //         echo '----------------- Testing project ----------'
-        //         sh 'mvn clean test'
-        //     }
-        // }
+         stage('Maven Test') {
+            steps {
+                echo '----------------- Testing project ----------'
+                sh 'mvn clean test'
+            }
+        }
         
         stage('Maven Build') {
              steps {
@@ -55,7 +49,7 @@ pipeline {
                      else \
                     echo OK; \
                  fi;);
-            docker container run --restart always --name booking-service -p 8081:8081 -d booking-service && docker network connect travel-management-network booking-service
+            docker container run --restart always --name booking-service -p 8081:8081 -e DBUN='root' -e DBPW='Myd@t@b@$3' -d booking-service && docker network connect travel-management-network booking-service
             '''
             }
         }
