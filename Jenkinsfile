@@ -55,7 +55,7 @@ pipeline {
                      else \
                     echo OK; \
                  fi;);
-            docker container run --restart always --name booking-service -p 8081:8081 --env-file envfile -d booking-service && docker network connect travel-management-network booking-service
+            docker container run --restart always --name booking-service -p 8081:8081 -d booking-service && docker network connect travel-management-network booking-service
             '''
             }
         }
