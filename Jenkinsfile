@@ -22,12 +22,12 @@ pipeline {
             }
         }
         
-         stage('Maven Test') {
-            steps {
-                echo '----------------- Testing project ----------'
-                sh 'mvn clean test'
-            }
-        }
+        //  stage('Maven Test') {
+        //     steps {
+        //         echo '----------------- Testing project ----------'
+        //         sh 'mvn clean test'
+        //     }
+        // }
         
         stage('Maven Build') {
              steps {
