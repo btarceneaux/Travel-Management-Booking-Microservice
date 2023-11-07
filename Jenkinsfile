@@ -58,7 +58,7 @@ pipeline {
                  fi;);
             docker container run \
             --env DBUN=$DBUN \
-            --env DBPW=$DBPW
+            --env DBPW=$DBPW \
             --restart always \
             --name booking-service \
             -p 8081:8081 \
